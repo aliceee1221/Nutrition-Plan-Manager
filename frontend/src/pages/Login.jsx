@@ -5,11 +5,17 @@ import axiosInstance from '../axiosConfig';
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
+  const [error, setError] = useState('');
   const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!formData.email || !formData.password) {
+      setError('Email and password are required.');
+      return;
+    }
+    setError('');
     try {
       const response = await axiosInstance.post('/api/auth/login', formData);
       login(response.data);
@@ -38,6 +44,11 @@ const Login = () => {
           onChange={(e) => setFormData({ ...formData, password: e.target.value })}
           className="w-full mb-4 p-2 border rounded"
         />
+        {error && (
+          <p className="text-red-500 mb-4 text-center">
+            {error}
+          </p>
+        )}
         <button type="submit" className="w-full bg-blue-600 text-white p-2 rounded">
           Login
         </button>
