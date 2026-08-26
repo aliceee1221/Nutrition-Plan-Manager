@@ -21,7 +21,7 @@ const Login = () => {
       login(response.data);
       navigate('/tasks');
     } catch (error) {
-      alert('Login failed. Please try again.');
+      setError(error.response?.data?.message || 'Login failed. Please try again.');
     }
   };
 
