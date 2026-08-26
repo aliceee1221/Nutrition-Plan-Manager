@@ -5,24 +5,35 @@ import axiosInstance from '../axiosConfig';
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
+  const [error, setError] = useState('');
   const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!formData.email || !formData.password) {
+      setError('Email and password are required.');
+      return;
+    }
+    setError('');
     try {
       const response = await axiosInstance.post('/api/auth/login', formData);
       login(response.data);
-      navigate('/tasks');
+      if (response.data.role === 'client'){
+        navigate('/client');
+      } else if (response.data.role === 'nutritionist'){
+        navigate('/nutritionist');
+      }
     } catch (error) {
-      alert('Login failed. Please try again.');
+      setError(error.response?.data?.message || 'Login failed. Please try again.');
     }
   };
 
   return (
     <div className="max-w-md mx-auto mt-20">
       <form onSubmit={handleSubmit} className="bg-white p-6 shadow-md rounded">
-        <h1 className="text-2xl font-bold mb-4 text-center">Login</h1>
+        <h1 className="text-2xl font-bold mb-2 text-center">Nutrition Plan Manager</h1>
+        <h2 className="text-xl mb-4 text-center">Login</h2>
         <input
           type="email"
           placeholder="Email"
@@ -37,6 +48,11 @@ const Login = () => {
           onChange={(e) => setFormData({ ...formData, password: e.target.value })}
           className="w-full mb-4 p-2 border rounded"
         />
+        {error && (
+          <p className="text-red-500 mb-4 text-center">
+            {error}
+          </p>
+        )}
         <button type="submit" className="w-full bg-blue-600 text-white p-2 rounded">
           Login
         </button>
