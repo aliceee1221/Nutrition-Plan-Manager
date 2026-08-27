@@ -15,7 +15,7 @@ const Navbar = () => {
     <nav className="bg-blue-600 text-white p-4 flex justify-between items-center">
       <Link to="/" className="text-2xl font-bold">Nutrition Plan Manager</Link>
       <div>
-        // Check if the user exsist, logged-in user can see the dashboard, profile and logout
+        {/* Check if the user exsist, logged-in user can see the dashboard, profile and logout */}
         {user ? (
           <>
             {user.role === 'client' && ( 
