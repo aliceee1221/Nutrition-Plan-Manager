@@ -7,7 +7,7 @@ const ProtectedRoute = ({ children, allowedRole }) => { // ProtectedRoute 不仅
         return <Navigate to="/login" replace />;
     }
     if (allowedRole && user.role !== allowedRole) {
-        return <Navigate to="/login" replace />;
+        return <Navigate to="/access-denied" replace />;
     }
     return children;
 };
