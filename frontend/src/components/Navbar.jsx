@@ -1,10 +1,11 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
+// Add logout control to authenticated interface
 const Navbar = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
-
+  // session termination + redirect to login
   const handleLogout = () => {
     logout();
     navigate('/login');
@@ -12,11 +13,17 @@ const Navbar = () => {
 
   return (
     <nav className="bg-blue-600 text-white p-4 flex justify-between items-center">
-      <Link to="/" className="text-2xl font-bold">Task Manager</Link>
+      <Link to="/" className="text-2xl font-bold">Nutrition Plan Manager</Link>
       <div>
+        // Check if the user exsist, logged-in user can see the dashboard, profile and logout
         {user ? (
           <>
-            <Link to="/tasks" className="mr-4">Tasks</Link>
+            {user.role === 'client' && ( 
+              <Link to="/client" className="mr-4">Dashboard</Link>
+            )}
+            {user.role === 'nutritionist' && (
+              <Link to="/nutritionist" className="mr-4">Dashboard</Link>
+            )}
             <Link to="/profile" className="mr-4">Profile</Link>
             <button
               onClick={handleLogout}
