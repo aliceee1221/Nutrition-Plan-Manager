@@ -4,7 +4,7 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(() => {
-    const storedUser = sessionStorage.getItem('user');
+    const storedUser = sessionStorage.getItem('user'); // 把 user 存入 sessionStorage, AuthContext 从 sessionStorage 恢复 user
     return storedUser ? JSON.parse(storedUser) : null;
   });
 
