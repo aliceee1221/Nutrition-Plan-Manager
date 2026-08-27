@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import ProtectedRoute from './components/ProtectedRoute';
+import AccessDenied from './pages/AccessDenied';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Profile from './pages/Profile';
@@ -14,13 +15,14 @@ function App() {
     <Router>
       <Navbar />
       <Routes>
+        <Route path="/access-denied" element={<AccessDenied />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
         <Route path="/tasks" element={<Tasks />} />
 
-        <Route path="/client" element={<ProtectedRoute><ClientDashboard /></ProtectedRoute>} />
-        <Route path="/nutritionist" element={<ProtectedRoute><NutritionistDashboard /></ProtectedRoute>} />
+        <Route path="/client" element={<ProtectedRoute allowedRole="client"><ClientDashboard /></ProtectedRoute>} />
+        <Route path="/nutritionist" element={<ProtectedRoute allowedRole="nutritionist"><NutritionistDashboard /></ProtectedRoute>} />
       </Routes>
     </Router>
   );
