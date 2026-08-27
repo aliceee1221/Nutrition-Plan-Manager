@@ -7,10 +7,12 @@ const NutritionRequestForm = () => { // Create form data
     const [formData, setFormData] = useState({
         nutritionGoal: '', dietaryPreferences: '', allergyInformation: ''
     });
+    
     const [error, setError] = useState('');
+    const [success, setSuccess] = useState('');
 
     const handleSubmit = async (e) => { // Prevent the browser from refreshing the page when submitting
-        e.preventDefault();
+        e.preventDefault(); setSuccess('');
 
         if (!formData.nutritionGoal.trim()) { 
             setError('Nutrition goal is required.');
@@ -32,9 +34,13 @@ const NutritionRequestForm = () => { // Create form data
                 '/api/requests', formData,
                 {headers: {Authorization: `Bearer ${user.token}`}}
             );
+            
             console.log(response.data);
+            setSuccess('Nutrition request submitted successfully.');
+            setFormData({ nutritionGoal: '', dietaryPreferences: '', allergyInformation: '' });
+
         } catch (error) {
-          console.error('Failed to submit nutrition request.', error);
+            setError(error.response?.data?.message || 'Failed to submit nutrition request.');
         }
     };
 
@@ -42,6 +48,7 @@ const NutritionRequestForm = () => { // Create form data
         <form onSubmit={handleSubmit} noValidate className="bg-white p-6 shadow-md rounded">
             <h1 className="text-2xl font-bold mb-4">Submit Nutrition Request</h1>
             <label className="block mb-2 font-medium">Nutrition Goal</label>
+            
             <input
               type="text"
               placeholder="e.g. Weight loss"
@@ -68,9 +75,14 @@ const NutritionRequestForm = () => { // Create form data
               required
               className="w-full mb-4 p-2 border rounded"
             />
+            
             {error && (
                 <p className="text-red-500 mb-4">{error}</p>
             )}
+            {success && (
+                <p className="text-green-600 mb-4">{success}</p>
+            )}
+
             <button type="submit" className="w-full bg-blue-600 text-white p-2 rounded">
                 Submit Request
             </button>
