@@ -19,8 +19,8 @@ function App() {
         <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
         <Route path="/tasks" element={<Tasks />} />
 
-        <Route path="/client" element={<ProtectedRoute><ClientDashboard /></ProtectedRoute>} />
-        <Route path="/nutritionist" element={<ProtectedRoute><NutritionistDashboard /></ProtectedRoute>} />
+        <Route path="/client" element={<ProtectedRoute allowedRole="client"><ClientDashboard /></ProtectedRoute>} />
+        <Route path="/nutritionist" element={<ProtectedRoute allowedRole="nutritionist"><NutritionistDashboard /></ProtectedRoute>} />
       </Routes>
     </Router>
   );
