@@ -1,12 +1,15 @@
 import { useState } from 'react'; // Save the content currently entered by the user
+import { useAuth } from '../context/AuthContext';
+import axiosInstance from '../axiosConfig';
 
 const NutritionRequestForm = () => { // Create form data
+    const { user } = useAuth();
     const [formData, setFormData] = useState({
         nutritionGoal: '', dietaryPreferences: '', allergyInformation: ''
     });
     const [error, setError] = useState('');
 
-    const handleSubmit = (e) => { // Prevent the browser from refreshing the page when submitting
+    const handleSubmit = async (e) => { // Prevent the browser from refreshing the page when submitting
         e.preventDefault();
 
         if (!formData.nutritionGoal.trim()) { 
@@ -23,6 +26,16 @@ const NutritionRequestForm = () => { // Create form data
         }
 
         setError('');
+        
+        try {
+            const response = await axiosInstance.post(
+                '/api/requests', formData,
+                {headers: {Authorization: `Bearer ${user.token}`}}
+            );
+            console.log(response.data);
+        } catch (error) {
+          console.error('Failed to submit nutrition request.', error);
+        }
     };
 
     return (
