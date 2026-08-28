@@ -27,4 +27,16 @@ const submitNutritionRequest = async (req, res) => {
     }
 };
 
-module.exports = { submitNutritionRequest };
+const getMyNutritionRequests = async (req, res) => {
+    try{
+        const requests = await NutritionRequest.find({
+            client: req.user._id
+        })
+
+        res.status(200).json(requests);
+    } catch (error) {
+        res.status(500).json({ message: 'Failed to retrieve nutrition requests.' })
+    }
+};
+
+module.exports = { submitNutritionRequest, getMyNutritionRequests };
