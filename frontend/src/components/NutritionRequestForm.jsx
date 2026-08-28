@@ -2,7 +2,7 @@ import { useState } from 'react'; // Save the content currently entered by the u
 import { useAuth } from '../context/AuthContext';
 import axiosInstance from '../axiosConfig';
 
-const NutritionRequestForm = () => { // Create form data
+const NutritionRequestForm = ({ onRequestSubmitted }) => { // Create form data
     const { user } = useAuth();
     const [formData, setFormData] = useState({
         nutritionGoal: '', dietaryPreferences: '', allergyInformation: ''
@@ -38,6 +38,9 @@ const NutritionRequestForm = () => { // Create form data
             console.log(response.data);
             setSuccess('Nutrition request submitted successfully.');
             setFormData({ nutritionGoal: '', dietaryPreferences: '', allergyInformation: '' });
+            if (onRequestSubmitted){
+                onRequestSubmitted();
+            }
 
         } catch (error) {
             setError(error.response?.data?.message || 'Failed to submit nutrition request.');
