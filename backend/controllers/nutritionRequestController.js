@@ -7,6 +7,13 @@ const submitNutritionRequest = async (req, res) => {
         }
 
         const { nutritionGoal, dietaryPreferences, allergyInformation } = req.body;
+
+        if (!nutritionGoal || !nutritionGoal.trim() ||
+            !dietaryPreferences || !dietaryPreferences.trim() ||
+            !allergyInformation || !allergyInformation.trim()) {
+            return res.status(400).json({ message: 'All nutrition request fields are required.' });
+        }
+        
         const nutritionRequest = await NutritionRequest.create({
             client: req.user._id, 
             nutritionGoal,
