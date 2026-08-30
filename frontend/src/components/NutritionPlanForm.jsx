@@ -16,6 +16,18 @@ const NutritionPlanForm = ({ request }) => {
         Create Nutrition Plan
       </h2>
 
+      <div className="mb-4">
+        <p>
+          <strong>Client:</strong>{' '}
+          {request.client?.name}
+        </p>
+
+        <p>
+          <strong>Nutrition Goal:</strong>{' '}
+          {request.nutritionGoal}
+        </p>
+      </div>
+
       <label className="block mb-2 font-medium">
         Plan Content
       </label>
