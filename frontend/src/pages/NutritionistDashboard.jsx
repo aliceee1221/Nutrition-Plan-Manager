@@ -14,6 +14,18 @@ const NutritionistDashboard = () => {
   const [plans, setPlans] = useState([]);
   const [selectedPlan, setSelectedPlan] = useState(null);
 
+  const handlePlanUpdated = (updatedPlan) => {
+    setPlans(
+      plans.map((plan) =>
+        plan._id === updatedPlan._id
+          ? updatedPlan
+          : plan
+      )
+    );
+
+    setSelectedPlan(updatedPlan);
+  };
+
   useEffect(() => {
     const fetchRequests = async () => {
       try {
@@ -81,7 +93,10 @@ const NutritionistDashboard = () => {
       />
 
       {selectedPlan && (
-        <NutritionPlanEditForm plan={selectedPlan}/>
+        <NutritionPlanEditForm 
+          plan={selectedPlan}
+          onPlanUpdated={handlePlanUpdated}
+        />
       )}
     </div>
   );

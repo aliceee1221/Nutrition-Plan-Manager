@@ -2,13 +2,14 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import axiosInstance from '../axiosConfig';
 
-const NutritionPlanEditForm = ({ plan }) => {
+const NutritionPlanEditForm = ({ plan, onPlanUpdated }) => {
   const { user } = useAuth();
   const [formData, setFormData] = useState({ 
     planContent: plan.planContent || '', 
     notes: plan.notes || '' 
   });
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
   useEffect(() => {
     setFormData({
@@ -21,6 +22,7 @@ const NutritionPlanEditForm = ({ plan }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setSuccess('');
 
     if (!formData.planContent.trim()) {
       setError('Plan content is required.');
@@ -38,10 +40,15 @@ const NutritionPlanEditForm = ({ plan }) => {
         },
         {headers: { Authorization: `Bearer ${user.token}` }}
       );
+      
+      setSuccess('Nutrition plan updated successfully.');
 
-      console.log(response.data);
+      if (onPlanUpdated) { 
+        onPlanUpdated(response.data);
+      }
+
     } catch (error) {
-      console.error('Failed to update nutrition plan.', error);
+      setError(error.response?.data?.message || 'Failed to update nutrition plan.');
     }    
   };
 
@@ -90,6 +97,10 @@ const NutritionPlanEditForm = ({ plan }) => {
 
       {error && (
         <p className="text-red-500 mb-4">{error}</p>
+      )}
+
+      {success && (
+        <p className="text-green-600 mb-4">{success}</p>
       )}
 
       <button
