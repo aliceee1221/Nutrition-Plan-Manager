@@ -72,6 +72,9 @@ const updateNutritionPlan = async (req, res) => {
 
     const updatedPlan = await nutritionPlan.save();
 
+    await updatedPlan.populate('client', 'name email');
+    await updatedPlan.populate('request', 'nutritionGoal');
+
     res.status(200).json(updatedPlan);
   } catch (error) {
     res.status(500).json({ message: 'Failed to update nutrition plan.' });
