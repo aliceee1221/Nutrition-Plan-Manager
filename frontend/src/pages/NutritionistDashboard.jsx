@@ -13,6 +13,9 @@ const NutritionistDashboard = () => {
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [plans, setPlans] = useState([]);
   const [selectedPlan, setSelectedPlan] = useState(null);
+  const [planToPublish, setPlanToPublish] = useState(null);
+  const [publishError, setPublishError] = useState('');
+  const [publishSuccess, setPublishSuccess] = useState('');
 
   const handlePlanUpdated = (updatedPlan) => {
     setPlans(
@@ -66,7 +69,61 @@ const NutritionistDashboard = () => {
     setSelectedRequest(updatedRequest);
   };
 
-  console.log('Selected plan:', selectedPlan);
+  const handlePublishPlan = (plan) => {
+    setPublishError('');
+    setPublishSuccess('');
+
+    if (!plan.planContent || !plan.planContent.trim()) {
+      setPublishError('Plan content is required before publication.');
+      return;
+    }
+
+    setPlanToPublish(plan);
+  };
+
+  const handleConfirmPublish = async () => {
+    if (!planToPublish) {
+      return;
+    }
+
+    setPublishError('');
+    setPublishSuccess('');
+
+    try {
+      const response = await axiosInstance.put(
+        `/api/plans/${planToPublish._id}/publish`,
+        {},
+        {headers: { Authorization: `Bearer ${user.token}` }}
+      );
+
+      setPublishSuccess(response.data.message);
+
+      setRequests(
+        requests.map((request) =>
+          request._id === planToPublish.request?._id
+            ? {
+                ...request,
+                status: 'Plan Available'
+              }
+            : request
+        )
+      );
+
+      if (
+        selectedRequest &&
+        selectedRequest._id === planToPublish.request?._id
+      ) {
+        setSelectedRequest({
+          ...selectedRequest,
+          status: 'Plan Available'
+        });
+      }
+
+      setPlanToPublish(null);
+    } catch (error) {
+      setPublishError(error.response?.data?.message || 'Failed to publish nutrition plan.');
+    }
+  };
 
   return (
     <div className="container mx-auto p-6">
@@ -90,7 +147,43 @@ const NutritionistDashboard = () => {
       <NutritionPlanList 
         plans={plans} 
         onEditPlan={setSelectedPlan}
+        onPublishPlan={handlePublishPlan}
       />
+
+      {publishError && (
+        <p className="text-red-500 mt-4">
+          {publishError}
+        </p>
+      )}
+
+      {publishSuccess && (
+        <p className="text-green-600 mt-4">
+          {publishSuccess}
+        </p>
+      )}
+
+      {planToPublish && (
+        <div className="bg-white p-6 shadow-md rounded mt-6">
+          <h2 className="text-xl font-bold mb-4">Publish Nutrition Plan</h2>
+
+          <p>
+            <strong>Client:</strong>{' '}
+            {planToPublish.client?.name}
+          </p>
+
+          <p>
+            <strong>Plan Content:</strong>{' '}
+            {planToPublish.planContent}
+          </p>
+
+          <button
+            onClick={handleConfirmPublish}
+            className="mt-4 bg-green-600 text-white px-4 py-2 rounded"
+          >
+            Confirm Publish
+          </button>
+        </div>
+      )}
 
       {selectedPlan && (
         <NutritionPlanEditForm 

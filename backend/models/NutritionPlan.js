@@ -5,7 +5,8 @@ const nutritionPlanSchema = new mongoose.Schema({
     client: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     nutritionist: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     planContent: { type: String, required: true },
-    notes: { type: String }
+    notes: { type: String },
+    published: { type: Boolean, default: false }
 },{
     timestamps: true
 });
