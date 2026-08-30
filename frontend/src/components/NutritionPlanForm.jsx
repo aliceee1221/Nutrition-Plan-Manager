@@ -2,14 +2,23 @@ import { useState } from 'react';
 
 const NutritionPlanForm = ({ request }) => {
   const [formData, setFormData] = useState({ planContent: '', notes: '' }); // Allow the Nutritionist to enter plan content and add notes
+  const [error, setError] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    if (!formData.planContent.trim()){
+      setError('Plan content is required.');
+      return;
+    }
+
+    setError('');
   };
 
   return (
     <form
       onSubmit={handleSubmit}
+      noValidate
       className="bg-white p-6 shadow-md rounded mt-6"
     >
       <h2 className="text-xl font-bold mb-4">
@@ -41,6 +50,7 @@ const NutritionPlanForm = ({ request }) => {
             planContent: e.target.value
           })
         }
+        required
         className="w-full mb-4 p-2 border rounded"
         rows="6"
       />
@@ -61,6 +71,10 @@ const NutritionPlanForm = ({ request }) => {
         className="w-full mb-4 p-2 border rounded"
         rows="3"
       />
+
+      {error && (
+        <p className="text-red-500 mb-4">{error}</p>
+      )}
 
       <button
         type="submit"
