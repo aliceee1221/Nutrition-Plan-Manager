@@ -5,6 +5,7 @@ import NutritionistRequestList from '../components/NutritionistRequestList';
 import NutritionistRequestDetail from '../components/NutritionistRequestDetail';
 import NutritionPlanForm from '../components/NutritionPlanForm';
 import NutritionPlanList from '../components/NutritionPlanList';
+import NutritionPlanEditForm from '../components/NutritionPlanEditForm';
 
 const NutritionistDashboard = () => {
   const { user } = useAuth();
@@ -53,6 +54,8 @@ const NutritionistDashboard = () => {
     setSelectedRequest(updatedRequest);
   };
 
+  console.log('Selected plan:', selectedPlan);
+
   return (
     <div className="container mx-auto p-6">
       <h1 className="text-2xl font-bold mb-4">Nutritionist Dashboard</h1>
@@ -69,12 +72,17 @@ const NutritionistDashboard = () => {
       />
 
       {selectedRequest && (
-      <NutritionPlanForm request={selectedRequest} />
+        <NutritionPlanForm request={selectedRequest} />
       )}
+      
       <NutritionPlanList 
         plans={plans} 
         onEditPlan={setSelectedPlan}
       />
+
+      {selectedPlan && (
+        <NutritionPlanEditForm />
+      )}
     </div>
   );
 };
