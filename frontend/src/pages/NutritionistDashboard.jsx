@@ -14,6 +14,7 @@ const NutritionistDashboard = () => {
   const [plans, setPlans] = useState([]);
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [planToPublish, setPlanToPublish] = useState(null);
+  const [publishError, setPublishError] = useState('');
 
   const handlePlanUpdated = (updatedPlan) => {
     setPlans(
@@ -67,7 +68,16 @@ const NutritionistDashboard = () => {
     setSelectedRequest(updatedRequest);
   };
 
-  console.log('Selected plan:', selectedPlan);
+  const handlePublishPlan = (plan) => {
+    setPublishError('');
+
+    if (!plan.planContent || !plan.planContent.trim()) {
+      setPublishError('Plan content is required before publication.');
+      return;
+    }
+
+    setPlanToPublish(plan);
+  };
 
   return (
     <div className="container mx-auto p-6">
@@ -91,8 +101,14 @@ const NutritionistDashboard = () => {
       <NutritionPlanList 
         plans={plans} 
         onEditPlan={setSelectedPlan}
-        onPublishPlan={setPlanToPublish}
+        onPublishPlan={handlePublishPlan}
       />
+
+      {publishError && (
+        <p className="text-red-500 mt-4">
+          {publishError}
+        </p>
+      )}
 
       {planToPublish && (
         <div className="bg-white p-6 shadow-md rounded mt-6">
@@ -107,6 +123,12 @@ const NutritionistDashboard = () => {
             <strong>Plan Content:</strong>{' '}
             {planToPublish.planContent}
           </p>
+
+          <button
+            className="mt-4 bg-green-600 text-white px-4 py-2 rounded"
+          >
+            Confirm Publish
+          </button>
         </div>
       )}
 
