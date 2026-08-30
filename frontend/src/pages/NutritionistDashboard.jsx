@@ -25,6 +25,17 @@ const NutritionistDashboard = () => {
     fetchRequests();
   }, [user]);
 
+  const handleStatusUpdated = (updatedRequest) => {
+    setRequests(requests.map((request) =>
+      request._id === updatedRequest._id 
+        ? updatedRequest 
+        : request
+      )
+    );
+
+    setSelectedRequest(updatedRequest);
+  };
+
   return (
     <div className="container mx-auto p-6">
       <h1 className="text-2xl font-bold mb-4">Nutritionist Dashboard</h1>
@@ -37,6 +48,7 @@ const NutritionistDashboard = () => {
 
       <NutritionistRequestDetail 
         request={selectedRequest}
+        onStatusUpdated={handleStatusUpdated}
       />
     </div>
   );

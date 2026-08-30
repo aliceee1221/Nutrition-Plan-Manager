@@ -62,6 +62,8 @@ const updateRequestStatus = async (req, res) => {
     nutritionRequest.status = status;
 
     const updatedRequest = await nutritionRequest.save();
+    
+    await updatedRequest.populate('client', 'name email');
 
     res.status(200).json(updatedRequest);
   } catch (error) {
