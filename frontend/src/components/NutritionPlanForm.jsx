@@ -1,10 +1,13 @@
 import { useState } from 'react';
+import { useAuth } from '../context/AuthContext';
+import axiosInstance from '../axiosConfig';
 
 const NutritionPlanForm = ({ request }) => {
+  const { user } = useAuth();
   const [formData, setFormData] = useState({ planContent: '', notes: '' }); // Allow the Nutritionist to enter plan content and add notes
   const [error, setError] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!formData.planContent.trim()){
@@ -13,6 +16,22 @@ const NutritionPlanForm = ({ request }) => {
     }
 
     setError('');
+
+    try {
+      const response = await axiosInstance.post(
+        '/api/plans',
+        {
+          requestId: request._id,
+          planContent: formData.planContent,
+          notes: formData.notes
+        },
+        {headers: { Authorization: `Bearer ${user.token}` }}
+      );
+
+      console.log(response.data);
+    } catch (error) {
+      console.error('Failed to create nutrition plan.', error);
+    }
   };
 
   return (
