@@ -33,4 +33,20 @@ const createNutritionPlan = async (req, res) => {
   }
 };
 
-module.exports = { createNutritionPlan };
+const getNutritionPlans = async (req, res) => {
+  try {
+    if (req.user.role !== 'nutritionist') {
+      return res.status(403).json({ message: 'Only nutritionists can view nutrition plans.' });
+    }
+
+    const plans = await NutritionPlan.find()
+      .populate('client', 'name email')
+      .populate('request', 'nutritionGoal');
+
+    res.status(200).json(plans);
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to retrieve nutrition plans.' });
+  }
+};
+
+module.exports = { createNutritionPlan, getNutritionPlans };

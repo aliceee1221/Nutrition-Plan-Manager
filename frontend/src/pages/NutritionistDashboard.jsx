@@ -4,18 +4,21 @@ import axiosInstance from '../axiosConfig';
 import NutritionistRequestList from '../components/NutritionistRequestList';
 import NutritionistRequestDetail from '../components/NutritionistRequestDetail';
 import NutritionPlanForm from '../components/NutritionPlanForm';
+import NutritionPlanList from '../components/NutritionPlanList';
 
 const NutritionistDashboard = () => {
+  const { user } = useAuth();
   const [requests, setRequests] = useState([]);
   const [selectedRequest, setSelectedRequest] = useState(null);
-  const { user } = useAuth();
+  const [plans, setPlans] = useState([]);
+  const [selectedPlan, setSelectedPlan] = useState(null);
 
   useEffect(() => {
     const fetchRequests = async () => {
       try {
         const response = await axiosInstance.get('/api/requests/all', { 
-          headers: { Authorization: `Bearer ${user.token}` }}
-        );
+          headers: { Authorization: `Bearer ${user.token}` }
+        });
 
         setRequests(response.data);
       } catch (error) {
@@ -23,7 +26,20 @@ const NutritionistDashboard = () => {
       }
     };
 
+    const fetchPlans = async () => {
+      try {
+        const response = await axiosInstance.get('/api/plans',{
+          headers: { Authorization: `Bearer ${user.token}`}
+        });
+
+        setPlans(response.data);
+      } catch (error) {
+        console.error('Failed to retrieve nutrition plans.', error);
+      }
+    };
+
     fetchRequests();
+    fetchPlans();
   }, [user]);
 
   const handleStatusUpdated = (updatedRequest) => {
@@ -55,6 +71,10 @@ const NutritionistDashboard = () => {
       {selectedRequest && (
       <NutritionPlanForm request={selectedRequest} />
       )}
+      <NutritionPlanList 
+        plans={plans} 
+        onEditPlan={setSelectedPlan}
+      />
     </div>
   );
 };
