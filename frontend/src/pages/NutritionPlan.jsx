@@ -33,6 +33,12 @@ const NutritionPlan = () => {
 
       <p className="mb-6">View your published nutrition plan below.</p>
 
+      {plans.length === 0 && (
+        <div className="bg-white p-6 shadow-md rounded">
+          <p>No nutrition plan is currently available.</p>
+        </div>
+      )}
+
       {plans.map((plan) => (
         <div
           key={plan._id}
