@@ -5,21 +5,32 @@ const NutritionPlanEditForm = ({ plan }) => {
     planContent: plan.planContent || '', 
     notes: plan.notes || '' 
   });
+  const [error, setError] = useState('');
 
   useEffect(() => {
     setFormData({
       planContent: plan.planContent || '',
       notes: plan.notes || ''
     });
+
+    setError('');
   }, [plan]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    if (!formData.planContent.trim()) {
+      setError('Plan content is required.');
+      return;
+    }
+
+    setError('');
   };
 
   return (
     <form
       onSubmit={handleSubmit}
+      noValidate
       className="bg-white p-6 shadow-md rounded mt-6"
     >
       <h2 className="text-xl font-bold mb-4">
@@ -38,6 +49,7 @@ const NutritionPlanEditForm = ({ plan }) => {
             planContent: e.target.value
           })
         }
+        required
         className="w-full mb-4 p-2 border rounded"
         rows="6"
       />
@@ -57,6 +69,10 @@ const NutritionPlanEditForm = ({ plan }) => {
         className="w-full mb-4 p-2 border rounded"
         rows="3"
       />
+
+      {error && (
+        <p className="text-red-500 mb-4">{error}</p>
+      )}
 
       <button
         type="submit"
