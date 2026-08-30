@@ -2,9 +2,11 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import axiosInstance from '../axiosConfig';
 import NutritionistRequestList from '../components/NutritionistRequestList';
+import NutritionistRequestDetail from '../components/NutritionistRequestDetail';
 
 const NutritionistDashboard = () => {
   const [requests, setRequests] = useState([]);
+  const [selectedRequest, setSelectedRequest] = useState(null);
   const { user } = useAuth();
 
   useEffect(() => {
@@ -30,7 +32,11 @@ const NutritionistDashboard = () => {
       
       <NutritionistRequestList
         requests={requests}
-        onSelectRequest={() => {}}
+        onSelectRequest={setSelectedRequest}
+      />
+
+      <NutritionistRequestDetail 
+        request={selectedRequest}
       />
     </div>
   );
