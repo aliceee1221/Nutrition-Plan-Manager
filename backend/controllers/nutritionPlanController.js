@@ -109,8 +109,10 @@ const publishNutritionPlan = async (req, res) => {
       return res.status(404).json({ message: 'Associated nutrition request not found.' });
     }
 
-    nutritionRequest.status = 'Plan Available';
+    nutritionPlan.published = true;
+    await nutritionPlan.save();
 
+    nutritionRequest.status = 'Plan Available';
     await nutritionRequest.save();
 
     res.status(200).json({
@@ -123,4 +125,23 @@ const publishNutritionPlan = async (req, res) => {
   }
 };
 
-module.exports = { createNutritionPlan, getNutritionPlans, updateNutritionPlan, publishNutritionPlan };
+const getMyPublishedNutritionPlans = async (req, res) => {
+  try {
+    if (req.user.role !== 'client') {
+      return res.status(403).json({ message: 'Only clients can view published nutrition plans.' });
+    }
+
+    const plans = await NutritionPlan.find({
+      client: req.user._id,
+      published: true
+    })
+      .populate('nutritionist', 'name email')
+      .populate('request', 'nutritionGoal');
+
+    res.status(200).json(plans);
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to retrieve published nutrition plans.' });
+  }
+};
+
+module.exports = { createNutritionPlan, getNutritionPlans, updateNutritionPlan, publishNutritionPlan, getMyPublishedNutritionPlans };
