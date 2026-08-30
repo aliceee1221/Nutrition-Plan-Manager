@@ -1,4 +1,32 @@
+import { useState, useEffect } from 'react';
+import { useAuth } from '../context/AuthContext';
+import axiosInstance from '../axiosConfig';
+
 const NutritionPlan = () => {
+  const { user } = useAuth();
+  const [plans, setPlans] = useState([]);
+
+  useEffect(() => {
+    const fetchPublishedPlans = async () => {
+      try {
+        const response = await axiosInstance.get(
+          '/api/plans/my-published',
+          {headers: { Authorization: `Bearer ${user.token}` }}
+        );
+
+        setPlans(response.data);
+        console.log(response.data);
+      } catch (error) {
+        console.error(
+          'Failed to retrieve published nutrition plans.',
+          error
+        );
+      }
+    };
+
+    fetchPublishedPlans();
+  }, [user]);
+
   return (
     <div className="container mx-auto p-6">
       <h1 className="text-2xl font-bold mb-4">
