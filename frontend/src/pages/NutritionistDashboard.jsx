@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import axiosInstance from '../axiosConfig';
 import NutritionistRequestList from '../components/NutritionistRequestList';
 import NutritionistRequestDetail from '../components/NutritionistRequestDetail';
+import NutritionPlanForm from '../components/NutritionPlanForm';
 
 const NutritionistDashboard = () => {
   const [requests, setRequests] = useState([]);
@@ -50,6 +51,10 @@ const NutritionistDashboard = () => {
         request={selectedRequest}
         onStatusUpdated={handleStatusUpdated}
       />
+
+      {selectedRequest && (
+      <NutritionPlanForm request={selectedRequest} />
+      )}
     </div>
   );
 };
