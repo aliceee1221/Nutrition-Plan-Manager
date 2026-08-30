@@ -1,7 +1,17 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const NutritionPlanEditForm = ({ plan }) => {
-  const [formData, setFormData] = useState({ planContent: '', notes: '' });
+  const [formData, setFormData] = useState({ 
+    planContent: plan.planContent || '', 
+    notes: plan.notes || '' 
+  });
+
+  useEffect(() => {
+    setFormData({
+      planContent: plan.planContent || '',
+      notes: plan.notes || ''
+    });
+  }, [plan]);
 
   const handleSubmit = (e) => {
     e.preventDefault();

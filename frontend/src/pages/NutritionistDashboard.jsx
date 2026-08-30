@@ -81,7 +81,7 @@ const NutritionistDashboard = () => {
       />
 
       {selectedPlan && (
-        <NutritionPlanEditForm />
+        <NutritionPlanEditForm plan={selectedPlan}/>
       )}
     </div>
   );
