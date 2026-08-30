@@ -49,4 +49,33 @@ const getNutritionPlans = async (req, res) => {
   }
 };
 
-module.exports = { createNutritionPlan, getNutritionPlans };
+const updateNutritionPlan = async (req, res) => {
+  try {
+    if (req.user.role !== 'nutritionist') {
+      return res.status(403).json({ message: 'Only nutritionists can update nutrition plans.' });
+    }
+
+    const { planContent, notes } = req.body;
+
+    if (!planContent || !planContent.trim()) {
+      return res.status(400).json({ message: 'Plan content is required.' });
+    }
+
+    const nutritionPlan = await NutritionPlan.findById(req.params.id);
+
+    if (!nutritionPlan) {
+      return res.status(404).json({ message: 'Nutrition plan not found.' });
+    }
+
+    nutritionPlan.planContent = planContent;
+    nutritionPlan.notes = notes;
+
+    const updatedPlan = await nutritionPlan.save();
+
+    res.status(200).json(updatedPlan);
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to update nutrition plan.' });
+  }
+};
+
+module.exports = { createNutritionPlan, getNutritionPlans, updateNutritionPlan };
