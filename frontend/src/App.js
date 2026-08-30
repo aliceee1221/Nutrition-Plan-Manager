@@ -8,6 +8,7 @@ import Profile from './pages/Profile';
 import Tasks from './pages/Tasks';
 import ClientDashboard from './pages/ClientDashboard';
 import NutritionistDashboard from './pages/NutritionistDashboard';
+import NutritionPlan from './pages/NutritionPlan';
 
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
         <Route path="/tasks" element={<Tasks />} />
 
         <Route path="/client" element={<ProtectedRoute allowedRole="client"><ClientDashboard /></ProtectedRoute>} />
+        <Route path="/nutrition-plan" element={<ProtectedRoute allowedRole="client"><NutritionPlan /></ProtectedRoute>} />
         <Route path="/nutritionist" element={<ProtectedRoute allowedRole="nutritionist"><NutritionistDashboard /></ProtectedRoute>} />
       </Routes>
     </Router>
