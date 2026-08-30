@@ -62,6 +62,8 @@ const updateRequestStatus = async (req, res) => {
     nutritionRequest.status = status;
 
     const updatedRequest = await nutritionRequest.save();
+    
+    await updatedRequest.populate('client', 'name email');
 
     res.status(200).json(updatedRequest);
   } catch (error) {
@@ -69,4 +71,18 @@ const updateRequestStatus = async (req, res) => {
   }
 };
 
-module.exports = { submitNutritionRequest, getMyNutritionRequests, updateRequestStatus };
+const getAllNutritionRequests = async (req, res) => {
+  try {
+    if (req.user.role !== 'nutritionist') {
+      return res.status(403).json({ message: 'Only nutritionists can view all client requests.' });
+    }
+
+    const requests = await NutritionRequest.find().populate('client', 'name email'); // Display Client identification information
+
+    res.status(200).json(requests);
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to retrieve client nutrition requests.' });
+  }
+};
+
+module.exports = { submitNutritionRequest, getMyNutritionRequests, getAllNutritionRequests, updateRequestStatus };
