@@ -6,9 +6,10 @@ const NutritionPlanForm = ({ request }) => {
   const { user } = useAuth();
   const [formData, setFormData] = useState({ planContent: '', notes: '' }); // Allow the Nutritionist to enter plan content and add notes
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); setSuccess('');
 
     if (!formData.planContent.trim()){
       setError('Plan content is required.');
@@ -29,8 +30,12 @@ const NutritionPlanForm = ({ request }) => {
       );
 
       console.log(response.data);
+      
+      setSuccess('Nutrition plan created successfully.');
+      setFormData({ planContent: '', notes: '' });
+
     } catch (error) {
-      console.error('Failed to create nutrition plan.', error);
+      setError(error.response?.data?.message || 'Failed to create nutrition plan.');
     }
   };
 
@@ -93,6 +98,10 @@ const NutritionPlanForm = ({ request }) => {
 
       {error && (
         <p className="text-red-500 mb-4">{error}</p>
+      )}
+
+      {success && (
+        <p className="text-green-600 mb-4">{success}</p>
       )}
 
       <button
