@@ -5,7 +5,7 @@ const nutritionRequestSchema = new mongoose.Schema({
     nutritionGoal: { type: String, required: true },
     dietaryPreferences: { type: String, required: true },
     allergyInformation: { type: String, required: true },
-    status: { type: String, enum: ['Pending', 'In Progress', 'Completed'], default: 'Pending'}
+    status: { type: String, enum: ['Pending', 'In Review', 'Plan Available'], default: 'Pending'}
 },{
     timestamps: true // auto createdAt, updatedAt, useful for request tracking
 });
