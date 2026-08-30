@@ -81,4 +81,46 @@ const updateNutritionPlan = async (req, res) => {
   }
 };
 
-module.exports = { createNutritionPlan, getNutritionPlans, updateNutritionPlan };
+const publishNutritionPlan = async (req, res) => {
+  try {
+    if (req.user.role !== 'nutritionist') {
+      return res.status(403).json({ message: 'Only nutritionists can publish nutrition plans.' });
+    }
+
+    const nutritionPlan = await NutritionPlan.findById(req.params.id);
+
+    if (!nutritionPlan) {
+      return res.status(404).json({ message: 'Nutrition plan not found.' });
+    }
+
+    if (
+      !nutritionPlan.planContent ||
+      !nutritionPlan.planContent.trim()
+    ) {
+      return res.status(400).json({ message: 'Incomplete nutrition plans cannot be published.' });
+    }
+
+    const nutritionRequest =
+      await NutritionRequest.findById(
+        nutritionPlan.request
+      );
+
+    if (!nutritionRequest) {
+      return res.status(404).json({ message: 'Associated nutrition request not found.' });
+    }
+
+    nutritionRequest.status = 'Plan Available';
+
+    await nutritionRequest.save();
+
+    res.status(200).json({
+      message: 'Nutrition plan published successfully.',
+      plan: nutritionPlan,
+      requestStatus: nutritionRequest.status
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to publish nutrition plan.' });
+  }
+};
+
+module.exports = { createNutritionPlan, getNutritionPlans, updateNutritionPlan, publishNutritionPlan };
