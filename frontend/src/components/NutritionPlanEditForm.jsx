@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
+import { useAuth } from '../context/AuthContext';
+import axiosInstance from '../axiosConfig';
 
 const NutritionPlanEditForm = ({ plan }) => {
+  const { user } = useAuth();
   const [formData, setFormData] = useState({ 
     planContent: plan.planContent || '', 
     notes: plan.notes || '' 
@@ -16,7 +19,7 @@ const NutritionPlanEditForm = ({ plan }) => {
     setError('');
   }, [plan]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!formData.planContent.trim()) {
@@ -25,6 +28,21 @@ const NutritionPlanEditForm = ({ plan }) => {
     }
 
     setError('');
+
+    try {
+      const response = await axiosInstance.put(
+        `/api/plans/${plan._id}`,
+        {
+          planContent: formData.planContent,
+          notes: formData.notes
+        },
+        {headers: { Authorization: `Bearer ${user.token}` }}
+      );
+
+      console.log(response.data);
+    } catch (error) {
+      console.error('Failed to update nutrition plan.', error);
+    }    
   };
 
   return (
