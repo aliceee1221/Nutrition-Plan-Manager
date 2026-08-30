@@ -39,4 +39,34 @@ const getMyNutritionRequests = async (req, res) => {
     }
 };
 
-module.exports = { submitNutritionRequest, getMyNutritionRequests };
+const updateRequestStatus = async (req, res) => {
+  try {
+    if (req.user.role !== 'nutritionist') {
+      return res.status(403).json({ message: 'Only nutritionists can update request status.' });
+    }
+
+    const { status } = req.body;
+
+    const validStatuses = ['Pending', 'In Review', 'Plan Available'];
+
+    if (!validStatuses.includes(status)) {
+      return res.status(400).json({ message: 'Invalid request status.' });
+    }
+
+    const nutritionRequest = await NutritionRequest.findById(req.params.id);
+
+    if (!nutritionRequest) {
+      return res.status(404).json({ message: 'Nutrition request not found.' });
+    }
+
+    nutritionRequest.status = status;
+
+    const updatedRequest = await nutritionRequest.save();
+
+    res.status(200).json(updatedRequest);
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to update request status.'});
+  }
+};
+
+module.exports = { submitNutritionRequest, getMyNutritionRequests, updateRequestStatus };
