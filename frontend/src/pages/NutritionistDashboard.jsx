@@ -4,18 +4,34 @@ import axiosInstance from '../axiosConfig';
 import NutritionistRequestList from '../components/NutritionistRequestList';
 import NutritionistRequestDetail from '../components/NutritionistRequestDetail';
 import NutritionPlanForm from '../components/NutritionPlanForm';
+import NutritionPlanList from '../components/NutritionPlanList';
+import NutritionPlanEditForm from '../components/NutritionPlanEditForm';
 
 const NutritionistDashboard = () => {
+  const { user } = useAuth();
   const [requests, setRequests] = useState([]);
   const [selectedRequest, setSelectedRequest] = useState(null);
-  const { user } = useAuth();
+  const [plans, setPlans] = useState([]);
+  const [selectedPlan, setSelectedPlan] = useState(null);
+
+  const handlePlanUpdated = (updatedPlan) => {
+    setPlans(
+      plans.map((plan) =>
+        plan._id === updatedPlan._id
+          ? updatedPlan
+          : plan
+      )
+    );
+
+    setSelectedPlan(updatedPlan);
+  };
 
   useEffect(() => {
     const fetchRequests = async () => {
       try {
         const response = await axiosInstance.get('/api/requests/all', { 
-          headers: { Authorization: `Bearer ${user.token}` }}
-        );
+          headers: { Authorization: `Bearer ${user.token}` }
+        });
 
         setRequests(response.data);
       } catch (error) {
@@ -23,7 +39,20 @@ const NutritionistDashboard = () => {
       }
     };
 
+    const fetchPlans = async () => {
+      try {
+        const response = await axiosInstance.get('/api/plans',{
+          headers: { Authorization: `Bearer ${user.token}`}
+        });
+
+        setPlans(response.data);
+      } catch (error) {
+        console.error('Failed to retrieve nutrition plans.', error);
+      }
+    };
+
     fetchRequests();
+    fetchPlans();
   }, [user]);
 
   const handleStatusUpdated = (updatedRequest) => {
@@ -36,6 +65,8 @@ const NutritionistDashboard = () => {
 
     setSelectedRequest(updatedRequest);
   };
+
+  console.log('Selected plan:', selectedPlan);
 
   return (
     <div className="container mx-auto p-6">
@@ -53,7 +84,19 @@ const NutritionistDashboard = () => {
       />
 
       {selectedRequest && (
-      <NutritionPlanForm request={selectedRequest} />
+        <NutritionPlanForm request={selectedRequest} />
+      )}
+      
+      <NutritionPlanList 
+        plans={plans} 
+        onEditPlan={setSelectedPlan}
+      />
+
+      {selectedPlan && (
+        <NutritionPlanEditForm 
+          plan={selectedPlan}
+          onPlanUpdated={handlePlanUpdated}
+        />
       )}
     </div>
   );
