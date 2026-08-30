@@ -13,6 +13,7 @@ const NutritionistDashboard = () => {
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [plans, setPlans] = useState([]);
   const [selectedPlan, setSelectedPlan] = useState(null);
+  const [planToPublish, setPlanToPublish] = useState(null);
 
   const handlePlanUpdated = (updatedPlan) => {
     setPlans(
@@ -90,7 +91,24 @@ const NutritionistDashboard = () => {
       <NutritionPlanList 
         plans={plans} 
         onEditPlan={setSelectedPlan}
+        onPublishPlan={setPlanToPublish}
       />
+
+      {planToPublish && (
+        <div className="bg-white p-6 shadow-md rounded mt-6">
+          <h2 className="text-xl font-bold mb-4">Publish Nutrition Plan</h2>
+
+          <p>
+            <strong>Client:</strong>{' '}
+            {planToPublish.client?.name}
+          </p>
+
+          <p>
+            <strong>Plan Content:</strong>{' '}
+            {planToPublish.planContent}
+          </p>
+        </div>
+      )}
 
       {selectedPlan && (
         <NutritionPlanEditForm 

@@ -1,4 +1,4 @@
-const NutritionPlanList = ({ plans, onEditPlan }) => {
+const NutritionPlanList = ({ plans, onEditPlan, onPublishPlan }) => {
   return (
     <div className="mt-8">
       <h2 className="text-xl font-bold mb-4">
@@ -35,6 +35,13 @@ const NutritionPlanList = ({ plans, onEditPlan }) => {
             className="mt-2 bg-blue-600 text-white px-4 py-2 rounded"
           >
             Edit Plan
+          </button>
+
+          <button
+            onClick={() => onPublishPlan(plan)}
+            className="mt-2 ml-2 bg-green-600 text-white px-4 py-2 rounded"
+          >
+            Publish Plan
           </button>
         </div>
       ))}
