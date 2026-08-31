@@ -129,13 +129,3 @@ PORT=5001
 The `.env` file contains sensitive information and must not be committed to GitHub.
 
 ---
-
-## Project Artefacts
-
-* **Jira Project:** [View Jira Project](YOUR_JIRA_LINK)
-* **Figma Prototype:** [View Figma Prototype](YOUR_FIGMA_LINK)
-* **System Design:** [View Draw.io System Design](YOUR_DRAWIO_LINK)
-* **GitHub Repository:** [View GitHub Repository](YOUR_GITHUB_LINK)
-* **Deployed Application:** [Open Nutrition Plan Manager](YOUR_EC2_URL)
-
----
